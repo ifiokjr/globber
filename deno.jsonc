@@ -1,0 +1,46 @@
+{
+  "tasks": {
+    "check": "deno task fix && deno task lint && deno task test && deno task test:docs && CI=true deno task lock",
+    "fix": "dprint fmt",
+    "lint": "deno lint",
+    "lock:update": "deno run --allow-run=deno --allow-read scripts/cache.ts",
+    "lock": "deno run --allow-run=deno --allow-env=CI --allow-read scripts/cache.ts --reload",
+    "test:coverage": "deno test --coverage=coverage --unstable -A",
+    "test:docs": "deno run -A ./scripts/test_docs.ts",
+    "test:snapshot": "deno test --unstable -A -- -u",
+    "test:watch": "deno test --unstable -A --watch",
+    "test": "deno test --unstable -A",
+    "update": "dprint config update && deno run -A 'https://deno.land/x/udd@0.5.0/main.ts' src/deps.ts scripts/deps.ts tests/deps.ts"
+  },
+  "compilerOptions": {
+    "noUncheckedIndexedAccess": true
+  },
+  "lint": {
+    "files": {
+      "include": ["./"],
+      "exclude": [
+        "**/node_modules",
+        "**/*-lock.json",
+        "**/__fixtures__",
+        "**/__snapshots__"
+      ]
+    },
+    "rules": {
+      "tags": ["recommended"],
+      "include": [
+        "ban-untagged-todo",
+        "camelcase",
+        "default-param-last",
+        "eqeqeq",
+        "no-await-in-loop",
+        "no-eval",
+        "no-sparse-arrays",
+        "no-throw-literal",
+        "prefer-ascii",
+        "single-var-declarator",
+        "triple-slash-reference"
+      ],
+      "exclude": ["ban-types"]
+    }
+  }
+}
