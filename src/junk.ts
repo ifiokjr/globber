@@ -31,14 +31,14 @@ export const junkRegex = new RegExp(ignoreList.join("|"));
 /**
  * Returns `true` if `filename` matches a junk file.
  *
- * Taken from https://github.com/sindresorhus/junk
+ * Adapted from https://github.com/sindresorhus/junk.
  *
  * ### Examples
  *
  * This be used to find all junk files in a directory.
  *
  * ```ts
- * import { isJunk } from 'https://deno.land/x/globber@0.0.0/mod.ts';
+ * import { isJunk } from 'https://deno.land/x/globber/mod.ts';
  *
  * const files: string[] = []
  * const junk: string[] = [];
@@ -73,7 +73,7 @@ Deno.readDir;
  * This be used to find all junk files in a directory.
  *
  * ```ts
- * import { isNotJunk } from 'https://deno.land/x/globber@0.0.0/mod.ts';
+ * import { isNotJunk } from 'https://deno.land/x/globber/mod.ts';
  *
  * const files: string[] = []
  * const notJunk: string[] = [];

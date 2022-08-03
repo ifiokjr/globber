@@ -1,6 +1,6 @@
 import {
   createMatcher,
-  CreateMatcherOptions,
+  CreateMatcherProps,
   MatchPattern,
 } from "../src/create_matcher.ts";
 import { assertEquals, describe, it } from "./deps.ts";
@@ -8,7 +8,7 @@ import { assertEquals, describe, it } from "./deps.ts";
 interface PatternTest {
   input: string;
   pattern: MatchPattern;
-  options?: CreateMatcherOptions;
+  options?: CreateMatcherProps;
   expected: boolean;
   method?: "only" | "ignore";
 }

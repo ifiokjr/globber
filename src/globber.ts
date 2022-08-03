@@ -1,6 +1,6 @@
 import {
   createMatcher,
-  CreateMatcherOptions,
+  CreateMatcherProps,
   Match,
   MatchFunction,
 } from "./create_matcher.ts";
@@ -9,14 +9,14 @@ import { GlobError } from "./errors.ts";
 import { getPath } from "./get_path.ts";
 import { normalize, normalizeDirectory, removeUndefined } from "./utils.ts";
 
-export interface GlobberProps extends CreateMatcherOptions, BaseGlobberProps {
+export interface GlobberProps extends CreateMatcherProps, BaseGlobberProps {
   /**
    * The search will be resolved from this directory and relative paths in the
    * GlobEntry are relative to this path.
    *
    * @default process.cwd()
    */
-  cwd?: string | URL;
+  cwd?: string | URL | undefined;
 
   /**
    * Provide matchers to match by the file / directory name relative to the
@@ -40,22 +40,22 @@ export interface GlobberProps extends CreateMatcherOptions, BaseGlobberProps {
    *
    * @default ['**']
    */
-  include?: Match | Match[];
+  include?: Match | Match[] | undefined;
 
   /**
    * Any matching patterns will be excluded from the results.
    *
    * @default []
    */
-  exclude?: Match | Match[];
+  exclude?: Match | Match[] | undefined;
 }
 
 /**
  * This produces an async iterable for searching through the provided patterns
- * relative to the `cwd`.
+ * relative to the `cwd`. If `cwd` is left blank then it defaults to `Deno.cwd()`.
  *
  * ```ts
- * import { globber } from 'https://deno.land/x/globber@0.0.0/mod.ts';
+ * import { globber } from 'https://deno.land/x/globber/mod.ts';
  *
  * for await (const entry of globber({ extensions: ['.jsonc', '.json'] })) {
  *   const contents = await Deno.readTextFile(entry.absolute);
@@ -111,7 +111,7 @@ const DEFAULT_OPTIONS: Required<GlobberProps> = {
 async function createGlobEntry(
   absolute: string,
   cwd: string,
-  trailingSlash?: boolean,
+  trailingSlash?: boolean | undefined,
 ): Promise<GlobEntry> {
   absolute = normalize(absolute);
   const { isDirectory, isFile, isSymlink } = await Deno.stat(absolute);
@@ -130,8 +130,8 @@ async function createGlobEntry(
 
 interface ShouldExcludeProps {
   path: string;
-  includer?: MatchFunction;
-  excluder?: MatchFunction;
+  includer?: MatchFunction | undefined;
+  excluder?: MatchFunction | undefined;
 }
 
 /**
@@ -244,7 +244,7 @@ interface BaseGlobberProps {
    *
    * @default Infinity
    */
-  maxDepth?: number;
+  maxDepth?: number | undefined;
 
   /**
    * Use this to resolve and recurse over all symlinks.
@@ -253,7 +253,7 @@ interface BaseGlobberProps {
    *
    * @default false
    */
-  followSymlinks?: boolean;
+  followSymlinks?: boolean | undefined;
 
   /**
    * Use this to exclude directories from the output. Useful if you only want to
@@ -262,7 +262,7 @@ interface BaseGlobberProps {
    *
    * @default false
    */
-  excludeDirectories?: boolean;
+  excludeDirectories?: boolean | undefined;
 
   /**
    * Whether to exclude files from the output. Useful if you only want to find
@@ -271,17 +271,17 @@ interface BaseGlobberProps {
    *
    * @default false
    */
-  excludeFiles?: boolean;
+  excludeFiles?: boolean | undefined;
 
   /**
    * Mark directories with a trailing slash.
    *
    * @default true
    */
-  trailingSlash?: boolean;
+  trailingSlash?: boolean | undefined;
 
   /**
    * Match empty directories. This is not active when `onlyFiles` is `true`.
    */
-  emptyDirectories?: boolean;
+  emptyDirectories?: boolean | undefined;
 }

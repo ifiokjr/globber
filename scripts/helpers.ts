@@ -1,16 +1,6 @@
-/**
- * Run tests on markdown files and comments.
- *
- * ```bash
- * deno run -A scripts/test_docs.ts
- * ```
- *
- * @script
- */
+import { gitUrlParse, readLines, semver } from "./deps.ts";
 
-import { readLines, semver } from "./deps.ts";
-
-export async function getVersion(cwd = Deno.cwd()): Promise<string> {
+export async function getTagVersion(cwd = Deno.cwd()): Promise<string> {
   let version = "0.0.0";
   const stdout = Deno.run({ cmd: ["git", "tag"], cwd, stdout: "piped" }).stdout;
 
@@ -24,6 +14,35 @@ export async function getVersion(cwd = Deno.cwd()): Promise<string> {
   }
 
   return version;
+}
+
+/**
+ * Read the
+ */
+export async function getGitHubRemote(cwd = Deno.cwd()): Promise<string> {
+  const stdout = await Deno.run({
+    cmd: ["git", "remote", "get-url", "origin"],
+    cwd,
+    stdout: "piped",
+  }).output();
+  const remote = new TextDecoder().decode(stdout);
+  const parsed = gitUrlParse(remote);
+
+  return `https://${parsed.source}/${parsed.full_name}/`;
+}
+
+/**
+ * Read the first commit in the commit history.
+ */
+export async function getFirstCommit(cwd = Deno.cwd()) {
+  const stdout = await Deno.run({
+    cmd: ["git", "rev-list", "--max-parents=0", "HEAD"],
+    cwd,
+    stdout: "piped",
+  }).output();
+  const ref = new TextDecoder().decode(stdout);
+
+  return ref.slice(0, 7);
 }
 
 export function createTag(
@@ -40,3 +59,5 @@ export function createTag(
     .run({ cmd: ["git", "tag", "version", "-m", version], cwd })
     .status();
 }
+
+export const cwd = new URL("..", import.meta.url);

@@ -5,7 +5,11 @@ export type MatchFunction = (source: string) => boolean;
 export type Match = string | MatchFunction | RegExp;
 export type MatchPattern = Match | Match[];
 
-export interface CreateMatcherOptions {
+/**
+ * Props for creating the matcher function which takes a pathname and returns
+ * true when the value matches and false when it doesn't match.
+ */
+export interface CreateMatcherProps {
   /**
    * When a glob begins with `!` and the glob matches the source, the match will
    * be negated. Set this to `true` to disable the behavior.
@@ -59,7 +63,7 @@ export interface CreateMatcherOptions {
    * const optionsWithoutPrefix = { extensions: ["ts", "js"] };
    * ```
    */
-  extensions?: string[] | null;
+  extensions?: string[] | null | undefined;
 
   /**
    * Extended globbing as described by the [bash man
@@ -92,7 +96,7 @@ export interface CreateMatcherOptions {
    *
    * @default false
    */
-  disableExtendedGlobbing?: boolean;
+  disableExtendedGlobbing?: boolean | undefined;
 }
 
 /**
@@ -104,7 +108,7 @@ export interface CreateMatcherOptions {
  */
 export function createMatcher(
   pattern: MatchPattern,
-  options: CreateMatcherOptions = {},
+  options: CreateMatcherProps = {},
 ): MatchFunction {
   const {
     disableNegation = false,
@@ -144,11 +148,6 @@ export function createMatcher(
 
       if (typeof matcher === "function") {
         match = matcher(source) || match;
-      } else if (
-        typeof matcher === "string" &&
-        (disableGlobExpansion || !matcher.endsWith("/")) && !isGlob(matcher)
-      ) {
-        match = matcher === source || match;
       } else {
         let regex: RegExp;
 
