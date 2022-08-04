@@ -1,7 +1,6 @@
-import { globber } from "../mod.ts";
+import { globber, Meta } from "../mod.ts";
 import { path } from "../src/deps.ts";
 import { semver } from "./deps.ts";
-import { getVersion } from "./helpers.ts";
 
 const cwd = new URL("../", import.meta.url).pathname;
 const importMapPath = path.join(cwd, "tests/test_docs_import_map.json");
@@ -20,15 +19,15 @@ const releaseTypes = [
 ] as const;
 
 try {
-  const version = await getVersion();
   const imports: Record<string, string> = {
     "https://deno.land/x/globber@<%=it.version%>/": cwd,
     "https://deno.land/x/globber/": cwd,
-    [`https://deno.land/x/globber@${version}/`]: cwd,
+    [`https://deno.land/x/globber@${Meta.VERSION}/`]: cwd,
   };
 
   for (const type of releaseTypes) {
-    imports[`https://deno.land/x/globber@${semver.inc(version, type)}/`] = cwd;
+    imports[`https://deno.land/x/globber@${semver.inc(Meta.VERSION, type)}/`] =
+      cwd;
   }
 
   const importMap = { imports };

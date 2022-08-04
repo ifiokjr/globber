@@ -1,4 +1,4 @@
-import { globToRegExp, isGlob, path } from "./deps.ts";
+import { globToRegExp, path } from "./deps.ts";
 import { isJunk } from "./junk.ts";
 
 export type MatchFunction = (source: string) => boolean;

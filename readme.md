@@ -56,13 +56,13 @@ const iterator = globber({
 
 for await (const entry of iterator) {
   if (entry.isDirectory) {
-    console.log("directory", entry.path);
+    console.log("directory", entry.absolute);
   } else if (entry.isFile) {
-    console.log("file", entry.path);
+    console.log("file", entry.absolute);
   }
 
   if (entry.isSymlink) {
-    console.log("symlink", entry.path);
+    console.log("symlink", entry.absolute);
     break; // break early is supported
   }
 }

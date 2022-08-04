@@ -13,6 +13,7 @@
     "test": "deno test --unstable -A",
     "update": "deno task update:dprint && deno task update:deps",
     "update:dprint": "dprint config update",
+    "publish": "deno run -A scripts/publish.ts",
     "update:deps": "deno run --allow-net --allow-read --allow-write scripts/update.ts"
   },
   "compilerOptions": {
@@ -39,7 +40,7 @@
         "no-eval",
         "no-sparse-arrays",
         "no-throw-literal",
-        "prefer-ascii",
+        // "prefer-ascii",
         "single-var-declarator",
         "triple-slash-reference"
       ],

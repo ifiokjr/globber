@@ -29,6 +29,23 @@ export async function getCurrentCommit(cwd = Deno.cwd()): Promise<string> {
   return new TextDecoder().decode(stdout).trim();
 }
 
+export async function gitCheckoutOrCreate(name: string) {
+  // try to checkout out
+  const result = await Deno.run({
+    cmd: ["git", "checkout", name],
+    cwd: cwd.pathname,
+  }).status();
+
+  if (result.success) {
+    return;
+  }
+
+  await Deno.run({
+    cmd: ["git", "checkout", "-b", name],
+    cwd: cwd.pathname,
+  }).status();
+}
+
 /**
  * Read the remote URL.
  */
@@ -86,6 +103,17 @@ export function createTag(
   return Deno
     .run({ cmd: ["git", "tag", "version", "-m", version], cwd })
     .status();
+}
+
+export async function gitReset(
+  ref: string,
+  mode: "hard" | "soft" | "mixed" = "hard",
+) {
+  await Deno.run({
+    cmd: ["git", "reset", `--${mode}`, ref],
+    cwd: cwd.pathname,
+    stdout: "inherit",
+  }).status();
 }
 
 export const cwd = new URL("..", import.meta.url);
