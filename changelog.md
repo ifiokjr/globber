@@ -6,4 +6,4 @@
 
 ### 🎉 Features
 
-- Initial release of the `globber package`.
+- This is the initial release of the `globber package`.

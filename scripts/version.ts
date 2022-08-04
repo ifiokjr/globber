@@ -16,13 +16,15 @@ import { cwd, getFirstCommit, getGitHubRemote } from "./helpers.ts";
 
 const log = getLogger();
 const args = parse(Deno.args, { boolean: ["promote"] });
-
 const VERSION_KEYWORDS = {
   major: ["Major", "Breaking", "BREAKING", "MAJOR", "💣", "💥"],
   minor: ["Features", "Feature", "Minor", "🎉", "✨"],
   patch: ["Fix", "Patch", "Other", "🐛"],
 } as const;
-
+const REGISTRY_REGEX = new RegExp(
+  `https://deno.land/x/${Meta.NAME}(?:@.*)?/`,
+  "g",
+);
 const RELEASES = objectKeys(VERSION_KEYWORDS);
 
 interface ChangelogVersion {
@@ -80,7 +82,7 @@ export async function getChangelogVersion(
     const url = new URL(cwd);
     const remote = await getGitHubRemote(url.pathname);
     const firstCommit = await getFirstCommit(url.pathname);
-    const nextUrl = new URL(`compare/${firstCommit}...HEAD`, remote).href;
+    const nextUrl = new URL(`compare/${firstCommit}...HEAD`, remote.href).href;
     contents = `# Changelog\n\n## Unreleased\n\n> [Compare](${nextUrl})\n`;
     log.info("Creating the changelog.md", path, contents);
     await Deno.writeTextFile(path, contents);
@@ -165,9 +167,9 @@ async function updateChangelog(props: ChangelogVersion) {
   previousVersion = previousVersion === "0.0.0"
     ? await getFirstCommit(cwd.pathname)
     : previousVersion;
-  const nextUrl = new URL(`compare/${props.version}...HEAD`, remote).href;
+  const nextUrl = new URL(`compare/${props.version}...HEAD`, remote.href).href;
   const previousUrl =
-    new URL(`compare/${previousVersion}...${props.version}`, remote).href;
+    new URL(`compare/${previousVersion}...${props.version}`, remote.href).href;
 
   const content = props.contents.replace(
     /^##\s+Unreleased\s+>\s+\[Compare\]\(.+\)/gmi,
@@ -218,21 +220,20 @@ async function updateMarkdownFiles(props: ChangelogVersion) {
   await Promise.all(promises);
 }
 
-const REGISTRY_REGEX = new RegExp(
-  `https://deno.land/x/${Meta.NAME}(?:@.*)?/`,
-  "g",
-);
+async function main() {
+  const value = await getChangelogVersion(cwd);
 
-const value = await getChangelogVersion(cwd);
-
-if (!value) {
-  log.warning("No version upgrade necessary.");
-} else {
-  await Promise.all([
-    updateChangelog(value),
-    updateMeta(value),
-    updateMarkdownFiles(value),
-  ]);
+  if (!value) {
+    log.warning("No version upgrade necessary.");
+  } else {
+    await Promise.all([
+      updateChangelog(value),
+      updateMeta(value),
+      updateMarkdownFiles(value),
+    ]);
+  }
 }
 
-// replace unreleased with the version and replace blockquote with
+if (import.meta.main) {
+  await main();
+}

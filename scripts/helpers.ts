@@ -17,9 +17,22 @@ export async function getTagVersion(cwd = Deno.cwd()): Promise<string> {
 }
 
 /**
- * Read the
+ * Get the currently checked out commit sha.
  */
-export async function getGitHubRemote(cwd = Deno.cwd()): Promise<string> {
+export async function getCurrentCommit(cwd = Deno.cwd()): Promise<string> {
+  const stdout = await Deno.run({
+    cmd: ["git", "rev-parse", "HEAD"],
+    cwd,
+    stdout: "piped",
+  }).output();
+
+  return new TextDecoder().decode(stdout).trim();
+}
+
+/**
+ * Read the remote URL.
+ */
+export async function getGitHubRemote(cwd = Deno.cwd()): Promise<GitHubRemote> {
   const stdout = await Deno.run({
     cmd: ["git", "remote", "get-url", "origin"],
     cwd,
@@ -28,7 +41,19 @@ export async function getGitHubRemote(cwd = Deno.cwd()): Promise<string> {
   const remote = new TextDecoder().decode(stdout);
   const parsed = gitUrlParse(remote);
 
-  return `https://${parsed.source}/${parsed.full_name}/`;
+  return {
+    fullName: parsed.full_name,
+    href: `https://${parsed.source}/${parsed.full_name}/`,
+    name: parsed.name,
+    owner: parsed.owner,
+  };
+}
+
+interface GitHubRemote {
+  owner: string;
+  name: string;
+  fullName: string;
+  href: string;
 }
 
 /**
@@ -45,6 +70,9 @@ export async function getFirstCommit(cwd = Deno.cwd()) {
   return ref.slice(0, 7);
 }
 
+/**
+ * Create a tag for the provided version.
+ */
 export function createTag(
   version: string,
   cwd = Deno.cwd(),
