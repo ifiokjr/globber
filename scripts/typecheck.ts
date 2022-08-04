@@ -4,8 +4,7 @@ import { cwd } from "./helpers.ts";
 const files: string[] = [];
 const entries = globber({
   cwd,
-  // include: ["scripts/**/*.ts", "tests/**/*test.ts", "mod.ts"],
-  extensions: [".ts"],
+  include: ["scripts/**/*.ts", "tests/**/*test.ts", "mod.ts"],
   exclude: ["**/fixtures", "**/snapshots"],
   excludeDirectories: true,
 });

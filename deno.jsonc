@@ -1,8 +1,11 @@
 {
   "tasks": {
     "check": "deno task fix && deno task lint && deno task test && deno task test:docs && deno task typecheck && CI=true deno task lock",
-    "fix": "dprint fmt",
-    "lint": "deno lint",
+    "fix": "deno task fix:format",
+    "fix:format": "dprint fmt",
+    "lint": "deno task lint:ts && deno task lint:format",
+    "lint:ts": "deno lint",
+    "lint:format": "dprint check",
     "lock:update": "deno run --allow-run=deno --allow-read scripts/cache.ts",
     "lock": "deno run --allow-run=deno --allow-env=CI --allow-read scripts/cache.ts --reload",
     "publish": "deno run -A scripts/publish.ts",
