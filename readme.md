@@ -9,7 +9,7 @@
 - Support arrays of globs
 
 ```ts
-import { globber } from "https://deno.land/x/globber/mod.ts";
+import { globber } from "https://deno.land/x/globber@0.1.0/mod.ts";
 
 const iterator = globber({
   cwd: import.meta.url,
@@ -21,7 +21,7 @@ const iterator = globber({
 - Support negatable globs using the `!` prefix
 
 ```ts
-import { globber } from "https://deno.land/x/globber/mod.ts";
+import { globber } from "https://deno.land/x/globber@0.1.0/mod.ts";
 
 const iterator = globber({
   cwd: import.meta.url,
@@ -33,7 +33,7 @@ const iterator = globber({
 - Support regex patterns and predicates which return true to indicate a match.
 
 ```ts
-import { globber } from "https://deno.land/x/globber/mod.ts";
+import { globber } from "https://deno.land/x/globber@0.1.0/mod.ts";
 
 const iterator = globber({
   cwd: import.meta.url,
@@ -46,7 +46,7 @@ const iterator = globber({
 This is a `deno` module which uses async iterators to lazily evaluate all matching files and directories.
 
 ```ts
-import { globber } from "https://deno.land/x/globber/mod.ts";
+import { globber } from "https://deno.land/x/globber@0.1.0/mod.ts";
 
 const iterator = globber({
   cwd: import.meta.url,
