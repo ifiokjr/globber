@@ -161,7 +161,6 @@ export async function getChangelogVersion(
  */
 async function updateChangelog(props: ChangelogVersion) {
   const date = new Date().toISOString().split("T").at(0);
-  console.log({ date });
   const remote = await getGitHubRemote(cwd.pathname);
   let previousVersion: string = VERSION;
   previousVersion = previousVersion === "0.0.0"
@@ -176,7 +175,6 @@ async function updateChangelog(props: ChangelogVersion) {
     `## Unreleased \n\n> [Compare](${nextUrl})\n\n## ${props.version}\n\n> [${date}](${previousUrl})`,
   );
 
-  console.log(content);
   await Deno.writeTextFile(props.path, content);
 }
 

@@ -50,10 +50,8 @@ async function load() {
       log.warning("No `lock.json` found. Creating a new one.");
       await update();
     } else {
-      console.log(error);
       log.critical(
-        "Error while reloading the cache.",
-        error.split("error: ")[1],
+        `Error while reloading the cache.\n${error.split("error: ")[1]}`,
       );
       Deno.exit(1);
     }
